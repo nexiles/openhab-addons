@@ -27,6 +27,8 @@ public class MQTTPublisherService extends MqttClient {
         logger.info("MQTTPublisher is activated!");
 
         this.connect();
+
+        this.subscribe();
     }
 
     @Deactivate
@@ -34,9 +36,18 @@ public class MQTTPublisherService extends MqttClient {
         logger.info("MQTTPublisher is deactivated!");
     }
 
+    private void subscribe() throws MqttException {
+        String topicIn = TOPIC_IN + "/#";
+        logger.info("Connect to topic: {}", topicIn);
+
+        super.subscribe(topicIn, (topic, message) -> {
+            logger.info("Received new message on topic: {}, message: {}", topic, message.toString());
+        });
+    }
+
     public void publish(Event event) throws MqttException {
-        String topic = TOPIC_OUT + "/" + event.getTopic();
-        logger.info("Publishing to MQTT topic: {}, payload {}", topic, event.getPayload());
-        super.publish(topic, new MqttMessage(event.getPayload().getBytes()));
+        String topicOut = TOPIC_OUT + "/" + event.getTopic();
+        logger.info("Publishing to MQTT topic: {}, payload {}", topicOut, event.getPayload());
+        super.publish(topicOut, new MqttMessage(event.getPayload().getBytes()));
     }
 }

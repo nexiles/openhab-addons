@@ -36,9 +36,6 @@ public class EventbusSubscriberService implements EventSubscriber {
     private final Logger logger = LoggerFactory.getLogger(EventbusSubscriberService.class);
 
     @Reference
-    protected @NonNullByDefault({}) EventbusPublisherService publisher;
-
-    @Reference
     protected @NonNullByDefault({}) MQTTPublisherService mqttPublisherService;
 
     @Activate

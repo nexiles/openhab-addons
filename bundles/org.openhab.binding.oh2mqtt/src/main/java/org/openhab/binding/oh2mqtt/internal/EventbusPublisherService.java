@@ -51,6 +51,10 @@ public class EventbusPublisherService {
         eventPublisher.post(itemCommandEvent);
     }
 
+    public void publishCommand(ItemCommandEvent payload) {
+        eventPublisher.post(payload);
+    }
+
     @Reference
     public void setEventPublisher(EventPublisher eventPublisher) {
         this.eventPublisher = eventPublisher;
