@@ -13,6 +13,9 @@
 package org.openhab.binding.oh2mqtt.internal;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+import org.openhab.binding.oh2mqtt.internal.events.EventbusEventListener;
+import org.openhab.core.events.Event;
 import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.ThingStatus;
@@ -30,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * @author Jakob Huber - Initial contribution
  */
 @NonNullByDefault
-public class OH2MQTTHandler extends BaseBridgeHandler {
+public class OH2MQTTHandler extends BaseBridgeHandler implements EventbusEventListener {
 
     private final Logger logger = LoggerFactory.getLogger(OH2MQTTHandler.class);
 
@@ -57,6 +60,7 @@ public class OH2MQTTHandler extends BaseBridgeHandler {
             if (mqttClientService.connect(configuration)) {
                 updateStatus(ThingStatus.ONLINE);
                 mqttClientService.subscribe(configuration.inTopic);
+                EventbusService.registerEventbusEventListener(this);
             } else {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR);
             }
@@ -67,5 +71,18 @@ public class OH2MQTTHandler extends BaseBridgeHandler {
     public void dispose() {
         logger.info("DISPOSE Bridge");
         mqttClientService.disconnect();
+    }
+
+    @Override
+    public void eventbusEventReceived(@Nullable Event e) {
+        String topic = e.getTopic();
+        String type = e.getType();
+        String payload = e.getPayload();
+        String source = e.getSource();
+
+        logger.info(String.format("Received new event: Topic: %s, Type: %s, Payload: %s, Source: %s", topic, type,
+                payload, source));
+
+        mqttClientService.publish(e);
     }
 }

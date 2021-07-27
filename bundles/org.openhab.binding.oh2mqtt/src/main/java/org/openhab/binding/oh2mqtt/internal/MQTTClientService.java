@@ -4,6 +4,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.openhab.core.events.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,10 +22,12 @@ public class MQTTClientService {
 
     private @Nullable MqttClient mqttClient;
     private @Nullable String serverUri;
+    private @Nullable OH2MQTTConfiguration configuration;
 
     public MQTTClientService() {}
 
     public boolean connect(OH2MQTTConfiguration configuration) {
+        this.configuration = configuration;
 
         serverUri = String.format("tcp://%s:%s", configuration.mqttHost, configuration.mqttPort);
 
@@ -65,6 +68,16 @@ public class MQTTClientService {
             });
         } catch (MqttException e) {
             logger.error("Cannot subscribe to topic", e);
+        }
+    }
+
+    public void publish(Event event) {
+        String topicOut = configuration.outTopic + "/" + event.getTopic();
+        logger.info("Publishing to MQTT topic: {}, payload {}", topicOut, event.getPayload());
+        try {
+            mqttClient.publish(topicOut, new MqttMessage(event.getPayload().getBytes()));
+        } catch (MqttException e) {
+            logger.error("Cannot publish to MQTT broker", e);
         }
     }
 
