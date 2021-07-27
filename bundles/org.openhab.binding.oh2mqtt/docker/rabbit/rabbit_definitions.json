@@ -1,0 +1,93 @@
+{
+    "rabbit_version": "3.8.16",
+    "users": [
+        {
+            "name": "administrator",
+            "password_hash": "p4Eco8H6EG1arcRwTPUiM4OZLuGwRyKevveEXnPlajagoK3K",
+            "hashing_algorithm": "rabbit_password_hashing_sha256",
+            "tags": "administrator"
+        },
+        {
+            "name": "zwavejs2mqtt",
+            "password_hash": "Rtxx9TTSywm5aSKl2KpLuglYV9mcGDfVpmSqAfCsyxm4Bc7J",
+            "hashing_algorithm": "rabbit_password_hashing_sha256",
+            "tags": ""
+        },
+        {
+            "name": "openhab",
+            "password_hash": "4qHghhTO9aVM0qnsFOB50XDmE0OXjZJgkHHDkpUQ9Atpohtm",
+            "hashing_algorithm": "rabbit_password_hashing_sha256",
+            "tags": ""
+        },
+        {
+            "name": "mqtt",
+            "password_hash": "idrW+9GRiPfh6bSSK82jA+BDsAVbKAIPDy6M3hb6fm8tVHh9",
+            "hashing_algorithm": "rabbit_password_hashing_sha256",
+            "tags": ""
+        }
+    ],
+    "vhosts": [{
+        "name": "/"
+    }],
+    "permissions": [
+        {
+            "user": "administrator",
+            "vhost": "/",
+            "configure": ".*",
+            "write": ".*",
+            "read": ".*"
+        },
+        {
+            "user": "zwavejs2mqtt",
+            "vhost": "/",
+            "configure": ".*",
+            "write": ".*",
+            "read": ".*"
+        },
+        {
+            "user": "openhab",
+            "vhost": "/",
+            "configure": ".*",
+            "write": ".*",
+            "read": ".*"
+        },
+        {
+            "user": "mqtt",
+            "vhost": "/",
+            "configure": ".*",
+            "write": ".*",
+            "read": ".*"
+        }
+    ],
+    "policies": [],
+    "exchanges": [
+        {
+            "name": "nexiles.mqtt",
+            "vhost": "/",
+            "type": "topic",
+            "durable": true,
+            "auto_delete": false,
+            "internal": false,
+            "arguments": {}
+        }
+    ],
+    "queues": [
+        {
+            "name": "openhab-out",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        }
+    ],
+    "bindings": [
+        {
+            "source": "nexiles.mqtt",
+            "vhost": "/",
+            "destination": "openhab.out",
+            "destination_type": "queue",
+            "routing_key": "openhab.out.#",
+            "arguments": {}
+        }
+    ]
+}

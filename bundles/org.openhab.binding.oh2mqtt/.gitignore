@@ -1,0 +1,9 @@
+/.idea/
+
+**/*.iml
+
+target/
+
+openhab-generator/pom.xml
+openhab-generator/bundles
+openhab-generator/tools
