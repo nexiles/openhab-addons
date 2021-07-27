@@ -15,6 +15,8 @@ package org.openhab.binding.oh2mqtt.internal;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.core.thing.ThingTypeUID;
 
+import java.util.Set;
+
 /**
  * The {@link OH2MQTTBindingConstants} class defines common constants, which are
  * used across the whole binding.
@@ -24,11 +26,10 @@ import org.openhab.core.thing.ThingTypeUID;
 @NonNullByDefault
 public class OH2MQTTBindingConstants {
 
-    private static final String BINDING_ID = "oh2mqtt";
+    public static final String BINDING_ID = "oh2mqtt";
 
     // List of all Thing Type UIDs
-    public static final ThingTypeUID THING_TYPE_SAMPLE = new ThingTypeUID(BINDING_ID, "sample");
+    public static final ThingTypeUID BROKER = new ThingTypeUID(BINDING_ID, "broker");
 
-    // List of all Channel ids
-    public static final String CHANNEL_1 = "channel1";
+    public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(BROKER);
 }

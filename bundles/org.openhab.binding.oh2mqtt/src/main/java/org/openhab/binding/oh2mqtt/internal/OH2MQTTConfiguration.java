@@ -20,9 +20,37 @@ package org.openhab.binding.oh2mqtt.internal;
 public class OH2MQTTConfiguration {
 
     /**
-     * Sample configuration parameters. Replace with your own.
+     * Hostname or IP of the MQTT broker
      */
-    public String hostname;
-    public String password;
-    public int refreshInterval;
+    public String mqttHost;
+
+    /**
+     * Port used for MQTT
+     */
+    public String mqttPort;
+
+    /**
+     * Name that represent this client on the MQTT broker
+     */
+    public String mqttClientName;
+
+    /**
+     * MQTT broker auth user
+     */
+    public String mqttUser;
+
+    /**
+     * MQTT broker auth password
+     */
+    public String mqttPassword;
+
+    /**
+     * The topic to publish the events on
+     */
+    public String outTopic;
+
+    /**
+     * The topic to listen for events
+     */
+    public String inTopic;
 }

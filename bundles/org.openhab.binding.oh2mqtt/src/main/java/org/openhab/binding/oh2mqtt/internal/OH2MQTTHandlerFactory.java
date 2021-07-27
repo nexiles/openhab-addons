@@ -12,18 +12,18 @@
  */
 package org.openhab.binding.oh2mqtt.internal;
 
-import static org.openhab.binding.oh2mqtt.internal.OH2MQTTBindingConstants.*;
-
-import java.util.Set;
-
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingTypeUID;
 import org.openhab.core.thing.binding.BaseThingHandlerFactory;
 import org.openhab.core.thing.binding.ThingHandler;
 import org.openhab.core.thing.binding.ThingHandlerFactory;
 import org.osgi.service.component.annotations.Component;
+
+import static org.openhab.binding.oh2mqtt.internal.OH2MQTTBindingConstants.BROKER;
+import static org.openhab.binding.oh2mqtt.internal.OH2MQTTBindingConstants.SUPPORTED_THING_TYPES_UIDS;
 
 /**
  * The {@link OH2MQTTHandlerFactory} is responsible for creating things and thing
@@ -32,10 +32,9 @@ import org.osgi.service.component.annotations.Component;
  * @author Jakob Huber - Initial contribution
  */
 @NonNullByDefault
-@Component(configurationPid = "binding.oh2mqtt", service = ThingHandlerFactory.class)
+@Component(service = { OH2MQTTHandlerFactory.class,
+        ThingHandlerFactory.class }, configurationPid = "binding.zwavetomqtt")
 public class OH2MQTTHandlerFactory extends BaseThingHandlerFactory {
-
-    private static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(THING_TYPE_SAMPLE);
 
     @Override
     public boolean supportsThingType(ThingTypeUID thingTypeUID) {
@@ -46,8 +45,8 @@ public class OH2MQTTHandlerFactory extends BaseThingHandlerFactory {
     protected @Nullable ThingHandler createHandler(Thing thing) {
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
-        if (THING_TYPE_SAMPLE.equals(thingTypeUID)) {
-            return new OH2MQTTHandler(thing);
+        if (BROKER.equals(thingTypeUID)) {
+            return new OH2MQTTHandler((Bridge) thing);
         }
 
         return null;

@@ -4,43 +4,47 @@
 	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
 	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
 
-	<!-- Sample Thing Type -->
-	<thing-type id="sample">
-		<!-- Comment this in for Things which need a Bridge to function.
-			<supported-bridge-type-refs>
-			<bridge-type-ref id="OH2MQTTBridge" />
-			</supported-bridge-type-refs>
-		-->
-
-		<label>OH2MQTT Binding Thing</label>
-		<description>Sample thing for OH2MQTT Binding</description>
-
-		<channels>
-			<channel id="channel1" typeId="sample-channel"/>
-		</channels>
-
-		<config-description>
-			<parameter name="hostname" type="text" required="true">
-				<context>network-address</context>
-				<label>Hostname</label>
-				<description>Hostname or IP address of the device</description>
-			</parameter>
-			<parameter name="password" type="text" required="true">
-				<context>password</context>
-				<label>Password</label>
-				<description>Passwort to access the device</description>
-			</parameter>
-			<parameter name="refreshInterval" type="integer" unit="s" min="1">
-				<label>Refresh Interval</label>
-				<description>Interval the device is polled in sec.</description>
-			</parameter>
-		</config-description>
-	</thing-type>
-
-	<!-- Sample Channel Type -->
-	<channel-type id="sample-channel">
-		<item-type>Number:Temperature</item-type>
-		<label>Example Temperature</label><!-- Use uppercase words, except prepositions. 2-3 words, max 25 chars -->
-		<description>Sample channel for OH2MQTT Binding</description>
-	</channel-type>
+    <bridge-type id="broker">
+        <label>MQTT Bridge</label>
+        <description>The MQTT Bridge</description>
+        <config-description>
+            <parameter name="mqttHost" type="text" required="true">
+                <context>network-address</context>
+                <label>MQTT Host</label>
+                <description>Hostname or IP address of the MQTT broker</description>
+                <default>192.168.200.93</default>
+            </parameter>
+            <parameter name="mqttPort" type="text" required="true">
+                <label>MQTT Port</label>
+                <description>Port used for MQTT</description>
+                <default>1883</default>
+            </parameter>
+            <parameter name="mqttClientName" type="text" required="true">
+                <label>MQTT Client name</label>
+                <description>Name to identify this client on the broker</description>
+                <default>oh2mqtt</default>
+            </parameter>
+            <parameter name="mqttUser" type="text" required="true">
+                <label>MQTT Username</label>
+                <description>MQTT Username</description>
+                <default>openhab</default>
+            </parameter>
+            <parameter name="mqttPassword" type="text" required="true">
+                <context>password</context>
+                <label>MQTT Password</label>
+                <description>MQTT Password</description>
+                <default>openhab</default>
+            </parameter>
+            <parameter name="outTopic" type="text" required="true">
+                <label>Out Topic</label>
+                <description>The topic to publish the events on</description>
+                <default>oh2mqtt/out</default>
+            </parameter>
+            <parameter name="inTopic" type="text" required="true">
+                <label>Out Topic</label>
+                <description>The topic to listen for events</description>
+                <default>oh2mqtt/in</default>
+            </parameter>
+        </config-description>
+    </bridge-type>
 </thing:thing-descriptions>
