@@ -80,7 +80,7 @@ public class OH2MQTTHandler extends BaseBridgeHandler implements EventbusEventLi
         String payload = e.getPayload();
         String source = e.getSource();
 
-        logger.info(String.format("Received new event: Topic: %s, Type: %s, Payload: %s, Source: %s", topic, type,
+        logger.trace(String.format("Received new event: Topic: %s, Type: %s, Payload: %s, Source: %s", topic, type,
                 payload, source));
 
         mqttClientService.publish(e);

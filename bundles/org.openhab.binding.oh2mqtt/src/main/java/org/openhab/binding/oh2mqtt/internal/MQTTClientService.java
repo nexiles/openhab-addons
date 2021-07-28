@@ -49,6 +49,7 @@ public class MQTTClientService {
         options.setMqttVersion(MQTT_VERSION_3_1_1);
 
         try {
+            mqttClient.setCallback(mqttCallback());
             mqttClient.connect(options);
             logger.debug("Successfully connected to MQTT broker: {}", serverUri);
             return true;
@@ -63,9 +64,7 @@ public class MQTTClientService {
             logger.warn("Connect to MQTT broker first, before subscribing");
         try {
             logger.info("Subscribe to topic: {}", topic);
-            mqttClient.subscribe(topic, (t, message) -> {
-                logger.info("Received new message on topic: {}, message: {}", t, message.toString());
-            });
+            mqttClient.subscribe(topic);
         } catch (MqttException e) {
             logger.error("Cannot subscribe to topic", e);
         }
@@ -73,7 +72,7 @@ public class MQTTClientService {
 
     public void publish(Event event) {
         String topicOut = configuration.outTopic + "/" + event.getTopic();
-        logger.info("Publishing to MQTT topic: {}, payload {}", topicOut, event.getPayload());
+        logger.trace("Publishing to MQTT topic: {}, payload {}", topicOut, event.getPayload());
         try {
             mqttClient.publish(topicOut, new MqttMessage(event.getPayload().getBytes()));
         } catch (MqttException e) {
@@ -90,5 +89,25 @@ public class MQTTClientService {
         } catch (MqttException e) {
             logger.error("Cannot disconnect from MQTT broker", e);
         }
+    }
+
+    private MqttCallback mqttCallback() {
+        return new MqttCallback() {
+            @Override
+            public void connectionLost(@Nullable Throwable cause) {
+                logger.error("MQTT connection lost", cause);
+            }
+
+            @Override
+            public void messageArrived(@Nullable String topic,@Nullable MqttMessage message) {
+                final String messageBody = new String(message.getPayload());
+                logger.trace("MQTT message received ({}): {}", topic, messageBody);
+            }
+
+            @Override
+            public void deliveryComplete(@Nullable IMqttDeliveryToken token) {
+                // currently not required
+            }
+        };
     }
 }
