@@ -57,7 +57,7 @@ public class MQTTClientService{
         try {
             mqttClient.setCallback(mqttCallback());
             mqttClient.connect(options);
-            logger.debug("Successfully connected to MQTT broker: {}", serverUri);
+            logger.info("Successfully connected to MQTT broker: {}", serverUri);
             return true;
         } catch (MqttException e) {
             logger.error("Cannot connect to MQTT broker", e);
@@ -78,7 +78,7 @@ public class MQTTClientService{
 
     public void publish(Event event) {
         String topicOut = configuration.outTopic + "/" + event.getTopic();
-        logger.trace("Publishing to MQTT topic: {}, payload {}", topicOut, event.getPayload());
+        logger.debug("Publishing to MQTT topic: {}, payload {}", topicOut, event.getPayload());
         try {
             mqttClient.publish(topicOut, new MqttMessage(event.getPayload().getBytes()));
         } catch (MqttException e) {
@@ -90,7 +90,7 @@ public class MQTTClientService{
         if (mqttClient == null)
             logger.warn("Connect to MQTT broker first, before disconnecting");
         try {
-            logger.debug("Disconnect from MQTT broker: {}", serverUri);
+            logger.info("Disconnect from MQTT broker: {}", serverUri);
             mqttClient.disconnect();
         } catch (MqttException e) {
             logger.error("Cannot disconnect from MQTT broker", e);

@@ -1,14 +1,12 @@
 package org.openhab.binding.oh2mqtt.internal;
 
 import org.openhab.binding.oh2mqtt.internal.events.EventbusEventListener;
-import org.openhab.core.events.Event;
-import org.openhab.core.events.EventFilter;
-import org.openhab.core.events.EventSubscriber;
-import org.openhab.core.events.TopicEventFilter;
+import org.openhab.core.events.*;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,16 +20,19 @@ public class EventbusService implements EventSubscriber {
 
     private final Logger logger = LoggerFactory.getLogger(EventbusService.class);
 
+    @Reference
+    private EventPublisher eventPublisher;
+
     private final Set<EventbusEventListener> eventbusEventListeners = new CopyOnWriteArraySet<>();
 
     @Activate
     protected void activate(BundleContext context) {
-        logger.info("EventbusService is activated!");
+        logger.debug("EventbusService is activated!");
     }
 
     @Deactivate
     protected void deactivate(BundleContext context) {
-        logger.info("EventbusService is deactivated!");
+        logger.debug("EventbusService is deactivated!");
     }
 
     @Override
@@ -47,6 +48,10 @@ public class EventbusService implements EventSubscriber {
     @Override
     public void receive(Event event) {
         notifyEventbusEventListener(event);
+    }
+
+    public void publish(Event event) {
+        eventPublisher.post(event);
     }
 
     private void notifyEventbusEventListener(Event event) {
