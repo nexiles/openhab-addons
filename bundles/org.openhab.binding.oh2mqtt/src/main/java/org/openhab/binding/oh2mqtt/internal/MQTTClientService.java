@@ -4,9 +4,13 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.openhab.binding.oh2mqtt.internal.events.MQTTEventListener;
 import org.openhab.core.events.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import static org.eclipse.paho.client.mqttv3.MqttConnectOptions.MQTT_VERSION_3_1_1;
 
@@ -16,13 +20,15 @@ import static org.eclipse.paho.client.mqttv3.MqttConnectOptions.MQTT_VERSION_3_1
  * @author nexiles - Initial contribution
  */
 @NonNullByDefault
-public class MQTTClientService {
+public class MQTTClientService{
 
     private final Logger logger = LoggerFactory.getLogger(MQTTClientService.class);
 
     private @Nullable MqttClient mqttClient;
     private @Nullable String serverUri;
     private @Nullable OH2MQTTConfiguration configuration;
+
+    private final static Set<MQTTEventListener> mqttEventListeners = new CopyOnWriteArraySet<>();
 
     public MQTTClientService() {}
 
@@ -100,8 +106,7 @@ public class MQTTClientService {
 
             @Override
             public void messageArrived(@Nullable String topic,@Nullable MqttMessage message) {
-                final String messageBody = new String(message.getPayload());
-                logger.trace("MQTT message received ({}): {}", topic, messageBody);
+                notifyMQTTEventListener(topic, message);
             }
 
             @Override
@@ -109,5 +114,15 @@ public class MQTTClientService {
                 // currently not required
             }
         };
+    }
+
+    private void notifyMQTTEventListener(@Nullable String topic, @Nullable MqttMessage message) {
+        mqttEventListeners.forEach(listener -> {
+            listener.mqttEventReceived(topic, message);
+        });
+    }
+
+    public static void registerMQTTEventListener(MQTTEventListener mqttEventListener) {
+        mqttEventListeners.add(mqttEventListener);
     }
 }

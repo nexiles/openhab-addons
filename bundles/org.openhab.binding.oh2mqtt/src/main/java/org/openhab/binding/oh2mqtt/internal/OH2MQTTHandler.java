@@ -14,7 +14,9 @@ package org.openhab.binding.oh2mqtt.internal;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.openhab.binding.oh2mqtt.internal.events.EventbusEventListener;
+import org.openhab.binding.oh2mqtt.internal.events.MQTTEventListener;
 import org.openhab.core.events.Event;
 import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.ChannelUID;
@@ -33,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * @author Jakob Huber - Initial contribution
  */
 @NonNullByDefault
-public class OH2MQTTHandler extends BaseBridgeHandler implements EventbusEventListener {
+public class OH2MQTTHandler extends BaseBridgeHandler implements EventbusEventListener, MQTTEventListener {
 
     private final Logger logger = LoggerFactory.getLogger(OH2MQTTHandler.class);
 
@@ -60,6 +62,7 @@ public class OH2MQTTHandler extends BaseBridgeHandler implements EventbusEventLi
             if (mqttClientService.connect(configuration)) {
                 updateStatus(ThingStatus.ONLINE);
                 mqttClientService.subscribe(configuration.inTopic);
+                MQTTClientService.registerMQTTEventListener(this);
                 EventbusService.registerEventbusEventListener(this);
             } else {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR);
@@ -84,5 +87,11 @@ public class OH2MQTTHandler extends BaseBridgeHandler implements EventbusEventLi
                 payload, source));
 
         mqttClientService.publish(e);
+    }
+
+    @Override
+    public void mqttEventReceived(@Nullable String topic, @Nullable MqttMessage message) {
+        String messageBody = new String(message.getPayload());
+        logger.info("MQTT message received ({}): {}", topic, messageBody);
     }
 }

@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 @Component(service = { EventbusService.class, EventSubscriber.class })
-public class EventbusService implements EventSubscriber{
+public class EventbusService implements EventSubscriber {
     private final Set<String> subscribedEventTypes = Set.of(EventSubscriber.ALL_EVENT_TYPES);
     private final EventFilter eventFilter = new TopicEventFilter("openhab/.*");
 
@@ -49,7 +49,7 @@ public class EventbusService implements EventSubscriber{
         notifyEventbusEventListener(event);
     }
 
-    public void notifyEventbusEventListener(Event event) {
+    private void notifyEventbusEventListener(Event event) {
         eventbusEventListeners.forEach(listener -> {
                 listener.eventbusEventReceived(event);
         });
