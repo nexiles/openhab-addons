@@ -28,7 +28,7 @@ public class MQTTClientService{
     private @Nullable String serverUri;
     private @Nullable OH2MQTTConfiguration configuration;
 
-    private final static Set<MQTTEventListener> mqttEventListeners = new CopyOnWriteArraySet<>();
+    private final Set<MQTTEventListener> mqttEventListeners = new CopyOnWriteArraySet<>();
 
     public MQTTClientService() {}
 
@@ -122,7 +122,7 @@ public class MQTTClientService{
         });
     }
 
-    public static void registerMQTTEventListener(MQTTEventListener mqttEventListener) {
+    public void registerMQTTEventListener(MQTTEventListener mqttEventListener) {
         mqttEventListeners.add(mqttEventListener);
     }
 }

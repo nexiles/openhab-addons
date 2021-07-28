@@ -22,7 +22,7 @@ public class EventbusService implements EventSubscriber {
 
     private final Logger logger = LoggerFactory.getLogger(EventbusService.class);
 
-    private final static Set<EventbusEventListener> eventbusEventListeners = new CopyOnWriteArraySet<>();
+    private final Set<EventbusEventListener> eventbusEventListeners = new CopyOnWriteArraySet<>();
 
     @Activate
     protected void activate(BundleContext context) {
@@ -55,7 +55,7 @@ public class EventbusService implements EventSubscriber {
         });
     }
 
-    public static void registerEventbusEventListener(EventbusEventListener eventbusEventListener) {
+    public void registerEventbusEventListener(EventbusEventListener eventbusEventListener) {
         eventbusEventListeners.add(eventbusEventListener);
     }
 }

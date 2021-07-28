@@ -21,6 +21,7 @@ import org.openhab.core.thing.binding.BaseThingHandlerFactory;
 import org.openhab.core.thing.binding.ThingHandler;
 import org.openhab.core.thing.binding.ThingHandlerFactory;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import static org.openhab.binding.oh2mqtt.internal.OH2MQTTBindingConstants.BROKER;
 import static org.openhab.binding.oh2mqtt.internal.OH2MQTTBindingConstants.SUPPORTED_THING_TYPES_UIDS;
@@ -36,6 +37,9 @@ import static org.openhab.binding.oh2mqtt.internal.OH2MQTTBindingConstants.SUPPO
         ThingHandlerFactory.class }, configurationPid = "binding.zwavetomqtt")
 public class OH2MQTTHandlerFactory extends BaseThingHandlerFactory {
 
+    @Reference
+    private @NonNullByDefault({}) EventbusService eventbusService;
+
     @Override
     public boolean supportsThingType(ThingTypeUID thingTypeUID) {
         return SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID);
@@ -46,7 +50,7 @@ public class OH2MQTTHandlerFactory extends BaseThingHandlerFactory {
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
         if (BROKER.equals(thingTypeUID)) {
-            return new OH2MQTTHandler((Bridge) thing);
+            return new OH2MQTTHandler((Bridge) thing, eventbusService);
         }
 
         return null;

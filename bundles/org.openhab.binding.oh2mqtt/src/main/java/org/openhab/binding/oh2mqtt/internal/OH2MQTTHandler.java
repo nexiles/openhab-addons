@@ -40,9 +40,11 @@ public class OH2MQTTHandler extends BaseBridgeHandler implements EventbusEventLi
     private final Logger logger = LoggerFactory.getLogger(OH2MQTTHandler.class);
 
     private final MQTTClientService mqttClientService;
+    private final EventbusService eventbusService;
 
-    public OH2MQTTHandler(Bridge bridge) {
+    public OH2MQTTHandler(Bridge bridge, EventbusService eventbusService) {
         super(bridge);
+        this.eventbusService = eventbusService;
         this.mqttClientService = new MQTTClientService();
     }
 
@@ -62,8 +64,8 @@ public class OH2MQTTHandler extends BaseBridgeHandler implements EventbusEventLi
             if (mqttClientService.connect(configuration)) {
                 updateStatus(ThingStatus.ONLINE);
                 mqttClientService.subscribe(configuration.inTopic);
-                MQTTClientService.registerMQTTEventListener(this);
-                EventbusService.registerEventbusEventListener(this);
+                mqttClientService.registerMQTTEventListener(this);
+                eventbusService.registerEventbusEventListener(this);
             } else {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR);
             }
